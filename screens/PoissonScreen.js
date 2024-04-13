@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { Decimal } from 'decimal.js';
+
 const PoissonScreen = () => {
-    const [lambda, setLambda] = useState("");
+    const [lamda, setLamda] = useState("");
     const [k, setK] = useState("");
     const [dataPoints, setDataPoints] = useState([]);
 
-   
     const factorial = (n) => {
         let result = new Decimal(1);
         for (let i = 2; i <= n; i++) {
@@ -15,72 +15,48 @@ const PoissonScreen = () => {
         return result;
     };
 
-    // Calculate Poisson probability
-    const calculatePoissonProbability = (lambda, k) => {
-        const lambdaDec = new Decimal(lambda);
+    const calculatePoissonProbability = (lamda, k) => {
+        const lamdaDec = new Decimal(lamda);
         const kDec = new Decimal(k);
         const factorialK = factorial(k);
-        const lambdaPowerK = Decimal.pow(lambdaDec, kDec);
-        const eNegLambda = Decimal.exp(lambdaDec.neg());
+        const lamdaPowerK = Decimal.pow(lamdaDec, kDec);
+        const eNegLamda = Decimal.exp(lamdaDec.neg());
 
-        return lambdaPowerK.mul(eNegLambda).div(factorialK).toNumber();
+        return lamdaPowerK.mul(eNegLamda).div(factorialK).toNumber();
     };
 
-    // Handle calculation button press
     const calculatePoisson = () => {
-        const lambdaValue = parseFloat(lambda);
+        const lamdaValue = parseFloat(lamda);
         const kValue = parseInt(k);
 
-        if (isNaN(lambdaValue) || lambdaValue < 0) {
-            alert("Invalid λ (lambda). Please enter a positive number.");
+        if (isNaN(lamdaValue) || lamdaValue < 0) {
+            alert("Invalid λ (lamda). Please enter a positive number.");
             return;
         }
-        if (isNaN(kValue) || kValue < 0) {
+        if (isNaN(kValue) || kValue < 0 || !Number.isInteger(kValue)) {
             alert("Invalid k. Please enter a non-negative integer.");
             return;
         }
 
-        const poissonResult = calculatePoissonProbability(lambdaValue, kValue);
+        const poissonResult = calculatePoissonProbability(lamdaValue, kValue);
         updateDataPoints(kValue, poissonResult);
     };
 
-    // Update chart data points
     const updateDataPoints = (k, result) => {
         const newPoint = { label: `P(X=${k})`, value: result };
-        setDataPoints(prevDataPoints => [...prevDataPoints, newPoint]);
+        setDataPoints(prevDataPoints => [...prevDataPoints.filter(point => point.label !== newPoint.label), newPoint]);
     };
 
- /*   // Create PDF of the results
-    const createPDF = async () => {
-        const pdfDoc = await PDFDocument.create();
-        const page = pdfDoc.addPage([550, 750]);
-        const timesRoman = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    
 
-        let yPosition = 700;
-        dataPoints.forEach((point, index) => {
-            page.drawText(`${point.label}: ${point.value.toFixed(4)}`, {
-                x: 50,
-                y: yPosition,
-                size: 12,
-                font: timesRoman,
-            });
-            yPosition -= 20;
-        });
-
-        const pdfBytes = await pdfDoc.save();
-        const filePath = `${RNFS.DocumentDirectoryPath}/PoissonResults.pdf`;
-        await RNFS.writeFile(filePath, pdfBytes, 'base64');
-        alert(`PDF created at: ${filePath}`);
-    };
-*/
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Poisson Distribution Calculator</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Enter λ (lambda)"
-                value={lambda}
-                onChangeText={setLambda}
+                placeholder="Enter λ (lamda)"
+                value={lamda}
+                onChangeText={setLamda}
                 keyboardType="numeric"
             />
             <TextInput
@@ -91,7 +67,7 @@ const PoissonScreen = () => {
                 keyboardType="numeric"
             />
             <Button title="Calculate" onPress={calculatePoisson} color="#007bff" />
-            <Button title="Save as PDF" onPress={calculatePoisson} color="#007bff" />
+            
             <View style={styles.results}>
                 {dataPoints.map((point, index) => (
                     <Text key={index} style={styles.resultText}>
@@ -112,18 +88,21 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
     },
     title: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: "bold",
         marginBottom: 20,
+        color: "#2c3e50", // Darker color for better readability
     },
     input: {
         width: "90%",
-        height: 50,
-        borderColor: "#cccccc",
+        height: 45,
+        borderColor: "#3498db", // Soft blue border
         borderWidth: 1,
-        paddingHorizontal: 10,
-        marginBottom: 10,
+        borderRadius: 5, // Rounded borders
+        paddingHorizontal: 15,
+        marginBottom: 12,
         fontSize: 16,
+        backgroundColor: "#ecf0f1", // Light gray background for input
     },
     results: {
         marginTop: 20,
@@ -132,7 +111,13 @@ const styles = StyleSheet.create({
     },
     resultText: {
         fontSize: 16,
+        color: "#34495e", // Soft black color
         marginBottom: 5,
+        padding: 5,
+        borderWidth: 1,
+        borderColor: "#bdc3c7", // Light grey border for results
+        borderRadius: 5, // Rounded borders for result texts
+        backgroundColor: "#ecf0f1", // Light gray background for results
     },
 });
 
