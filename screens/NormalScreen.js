@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, ScrollView } from "react-native";
 import { Dimensions } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { BarChart } from "react-native-chart-kit";  // Import BarChart
 
 const NormalScreen = () => {
   const [mean, setMean] = useState("");
@@ -14,41 +14,29 @@ const NormalScreen = () => {
       return;
     }
     const variance = Math.pow(parseFloat(stdDev), 2);
-    const xValues = Array.from(
-      { length: 21 },
-      (_, i) => i - 10 + parseFloat(mean)
-    );
+    const xValues = Array.from({ length: 21 }, (_, i) => parseFloat(mean) + (i - 10));
     const results = xValues.map((x) => ({
-      label: `f(${x.toFixed(2)})`,
-      value: (
+      x: x.toFixed(2),
+      y: (
         (1 / Math.sqrt(2 * Math.PI * variance)) *
-        Math.exp(-Math.pow(x - mean, 2) / (2 * variance))
+        Math.exp(-Math.pow(x - parseFloat(mean), 2) / (2 * variance))
       ).toFixed(4),
     }));
     setDataPoints(results);
-    console.log("תוצאות החישובים:", results);
   };
 
-  /*const chartConfig = {
-    backgroundColor: "#022173",
-    backgroundGradientFrom: "#1E2923",
-    backgroundGradientTo: "#08130D",
-    decimalPlaces: 4,
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
-    propsForDots: {
-      r: "6",
-      strokeWidth: "2",
-      stroke: "#ffa726",
-    },
+  const chartConfig = {
+    backgroundGradientFrom: "#ffffff",
+    backgroundGradientTo: "#ffffff",
+    decimalPlaces: 4,  // optional, defaults to 2dp
+    color: (opacity = 1) => `rgba(0, 123, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
   };
 
-*/
+  const screenWidth = Dimensions.get("window").width;
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>מחשבון חלוקה תקנית</Text>
       <TextInput
         style={styles.input}
@@ -64,31 +52,44 @@ const NormalScreen = () => {
         onChangeText={setStdDev}
         keyboardType="numeric"
       />
-      <Button title="חשב" onPress={calculateNormal} />
+      <Button title="חשב" onPress={calculateNormal} color="#007bff" />
       <Text style={styles.resultTitle}>תוצאה:</Text>
+      {dataPoints.length > 0 && (
+        <BarChart
+          style={{ marginVertical: 8 }}
+          data={{
+            labels: dataPoints.map(dp => dp.x),
+            datasets: [{ data: dataPoints.map(dp => dp.y) }]
+          }}
+          width={screenWidth - 16} // from react-native
+          height={220}
+          yAxisLabel=""
+          chartConfig={chartConfig}
+          verticalLabelRotation={30}
+        />
+      )}
       <ScrollView style={styles.resultContainer}>
         {dataPoints.map((point, index) => (
           <Text key={index} style={styles.resultText}>
-            {point.label}: {point.value}
+            {point.x}: {point.y}
           </Text>
         ))}
       </ScrollView>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
+    padding: 8,
     backgroundColor: "#fff",
   },
   title: {
     fontSize: 22,
     fontWeight: "bold",
     marginBottom: 20,
+    textAlign: "center",
   },
   input: {
     width: "90%",
@@ -98,6 +99,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
     fontSize: 16,
+    alignSelf: "center",
   },
   resultTitle: {
     fontSize: 20,
@@ -105,7 +107,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   resultContainer: {
-    marginTop: 10,
     paddingHorizontal: 10,
   },
   resultText: {
