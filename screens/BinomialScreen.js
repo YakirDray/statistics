@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import * as math from "mathjs";
-import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 
 const screenWidth = Dimensions.get("window").width;
@@ -28,23 +27,6 @@ const BinomialScreen = () => {
     setDataPoints(newPoints);
   };
 
-  /*const chartConfig = {
-    backgroundColor: "#022173",
-    backgroundGradientFrom: "#1E2923",
-    backgroundGradientTo: "#08130D",
-    decimalPlaces: 2,
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
-    propsForDots: {
-      r: "6",
-      strokeWidth: "2",
-      stroke: "#ffa726",
-    },
-  };
-*/
   return (
     <View style={styles.container}>
   <Text style={styles.title}>מחשבון חלוקה בינומית</Text>
