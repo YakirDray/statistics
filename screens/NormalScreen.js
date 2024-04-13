@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import { Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 const NormalScreen = () => {
@@ -29,24 +28,6 @@ const NormalScreen = () => {
     console.log("תוצאות החישובים:", results);
   };
 
-  /*const chartConfig = {
-    backgroundColor: "#022173",
-    backgroundGradientFrom: "#1E2923",
-    backgroundGradientTo: "#08130D",
-    decimalPlaces: 4,
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
-    propsForDots: {
-      r: "6",
-      strokeWidth: "2",
-      stroke: "#ffa726",
-    },
-  };
-
-*/
   return (
     <View style={styles.container}>
       <Text style={styles.title}>מחשבון חלוקה תקנית</Text>
