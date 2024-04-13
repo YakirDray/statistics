@@ -9,20 +9,41 @@ const BinomialScreen = () => {
   const [dataPoints, setDataPoints] = useState([]);
 
   const calculateBinomial = () => {
-    if (!n || !p || !k) {
-      alert("אנא הזן את כל הערכים.");
-      return;
+    const nVal = parseInt(n); // Convert n to integer
+    const kVal = parseInt(k); // Convert k to integer
+    const pVal = parseFloat(p); // Convert p to float
+
+    // Validate inputs
+    if (isNaN(nVal) || isNaN(kVal) || isNaN(pVal)) {
+        alert("Please enter valid numerical values for n, k, and p.");
+        return;
     }
-    const binomialResult =
-      math.combinations(parseInt(n), parseInt(k)) *
-      Math.pow(parseFloat(p), parseInt(k)) *
-      Math.pow(1 - parseFloat(p), parseInt(n) - parseInt(k));
+    if (!Number.isInteger(nVal) || !Number.isInteger(kVal)) {
+        alert("Please enter integer values for n and k.");
+        return;
+    }
+    if (nVal < 0 || kVal < 0 || kVal > nVal) {
+        alert("Ensure that n and k are non-negative integers, and k ≤ n.");
+        return;
+    }
+    if (pVal < 0 || pVal > 1) {
+        alert("Please enter a probability p as a decimal between 0 and 1.");
+        return;
+    }
+
+    // Calculate binomial probability
+    const binomialResult = math.combinations(nVal, kVal) *
+        Math.pow(pVal, kVal) *
+        Math.pow(1 - pVal, nVal - kVal);
+
+    // Update data points state
     const newPoints = [
-      ...dataPoints,
-      { label: `P(X=${k})`, value: binomialResult },
+        ...dataPoints,
+        { label: `P(X=${kVal})`, value: binomialResult.toFixed(4) } 
     ];
     setDataPoints(newPoints);
-  };
+};
+
 
   return (
     <View style={styles.container}>

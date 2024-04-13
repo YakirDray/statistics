@@ -8,29 +8,33 @@ const NormalScreen = () => {
   const [dataPoints, setDataPoints] = useState([]);
 
   const calculateNormal = () => {
-    if (!mean || !stdDev) {
-      alert("אנא הזן את הממוצע ואת הסטיית תקן.");
-      return;
+    const meanVal = parseFloat(mean);
+    const stdDevVal = parseFloat(stdDev);
+
+    if (isNaN(meanVal) || isNaN(stdDevVal)) {
+        alert("Please enter valid numbers for the mean (μ) and standard deviation (σ).");
+        return;
     }
-    const variance = Math.pow(parseFloat(stdDev), 2);
-    const xValues = Array.from(
-      { length: 21 },
-      (_, i) => i - 10 + parseFloat(mean)
-    );
-    const results = xValues.map((x) => ({
-      label: `f(${x.toFixed(2)})`,
-      value: (
-        (1 / Math.sqrt(2 * Math.PI * variance)) *
-        Math.exp(-Math.pow(x - mean, 2) / (2 * variance))
-      ).toFixed(4),
+
+    if (stdDevVal <= 0) {
+        alert("Please enter a positive number for the standard deviation (σ).");
+        return;
+    }
+
+    const variance = stdDevVal * stdDevVal;
+    const xValues = Array.from({ length: 100 }, (_, i) => (i - 50) * 0.1 + meanVal);
+    const results = xValues.map(x => ({
+        label: `f(${x.toFixed(2)})`,
+        value: (1 / Math.sqrt(2 * Math.PI * variance) * Math.exp(-Math.pow(x - meanVal, 2) / (2 * variance))).toFixed(4)
     }));
+
     setDataPoints(results);
-    console.log("תוצאות החישובים:", results);
-  };
+};
+
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>מחשבון חלוקה תקנית</Text>
+      <Text style={styles.title}>מחשבון התפלגות נורמאלית</Text>
       <TextInput
         style={styles.input}
         placeholder="הזן את הממוצע (μ)"
@@ -64,35 +68,58 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#f0f0f0",  // Soft grey background
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: "bold",
+    color: "#2c3e50",  // Dark slate color for titles
     marginBottom: 20,
   },
   input: {
     width: "90%",
-    height: 50,
-    borderColor: "#cccccc",
+    height: 45,
+    borderColor: "#3498db",  // Softer blue for borders
     borderWidth: 1,
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    borderRadius: 10,  // Rounded corners for input fields
+    paddingHorizontal: 15,
+    marginBottom: 15,
     fontSize: 16,
+    backgroundColor: "#ffffff",  // White background for inputs
   },
   resultTitle: {
     fontSize: 20,
     fontWeight: "bold",
+    color: "#2c3e50",
     marginTop: 20,
   },
   resultContainer: {
     marginTop: 10,
+    width: "90%",
+    maxHeight: 200,  // Limit the height of the scroll view
     paddingHorizontal: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10,  // Rounded corners
   },
   resultText: {
     fontSize: 16,
+    color: "#333",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: "#eee",  // Very light grey for subtle separation
     marginBottom: 5,
   },
+  button: {
+    backgroundColor: "#2980b9",  // Blue shade
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",  // White text color
+    elevation: 3,  // Shadow for button
+    marginTop: 10,
+  }
 });
 
 export default NormalScreen;
