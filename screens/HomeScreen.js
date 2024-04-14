@@ -27,7 +27,7 @@ function HomeScreen({ navigation }) {
         style={styles.button}
         onPress={() => navigation.navigate("Statistics")}
       >
-        <Text style={styles.buttonText}> Statistics </Text>
+        <Text style={styles.buttonText}>         Statistics         </Text>
       </TouchableOpacity>
     </View>
   );
