@@ -1,7 +1,14 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  Animated,
+} from "react-native";
 
-const { width } = Dimensions.get('window'); // Get the window dimensions
+const { width } = Dimensions.get("window"); // Get the window dimensions
 
 function HomeScreen({ navigation }) {
   const animatedButtonScale = new Animated.Value(1);
@@ -11,13 +18,13 @@ function HomeScreen({ navigation }) {
       Animated.timing(animatedButtonScale, {
         toValue: 0.96,
         duration: 100,
-        useNativeDriver: true
+        useNativeDriver: true,
       }),
       Animated.timing(animatedButtonScale, {
         toValue: 1,
         duration: 100,
-        useNativeDriver: true
-      })
+        useNativeDriver: true,
+      }),
     ]).start(() => {
       navigation.navigate(route);
     });
@@ -26,7 +33,12 @@ function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>מחשבון הסתברות </Text>
-      <Animated.View style={[styles.buttonContainer, { transform: [{ scale: animatedButtonScale }] }]}>
+      <Animated.View
+        style={[
+          styles.buttonContainer,
+          { transform: [{ scale: animatedButtonScale }] },
+        ]}
+      >
         <TouchableOpacity
           style={styles.button}
           onPress={() => handlePress("Binomial")}
@@ -43,6 +55,13 @@ function HomeScreen({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
+          onPress={() => handlePress("NegativeBinomial")}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>NegativeBinomial Distribution</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => handlePress("Normal")}
           activeOpacity={0.8}
         >
@@ -55,9 +74,15 @@ function HomeScreen({ navigation }) {
         >
           <Text style={styles.buttonText}>Statistics</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handlePress("Hypergeometric")}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>Hypergeometric Distribution</Text>
+        </TouchableOpacity>
       </Animated.View>
       <Text style={styles.title}>Dray App</Text>
-
     </View>
   );
 }
@@ -76,9 +101,9 @@ const styles = StyleSheet.create({
     textTransform: "uppercase", // Maintaining the stylistic choice for consistency
   },
   buttonContainer: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   button: {
     backgroundColor: "#0f3460", // Consistent color theme for buttons

@@ -6,6 +6,8 @@ import BinomialScreen from "./screens/BinomialScreen";
 import PoissonScreen from "./screens/PoissonScreen";
 import NormalScreen from "./screens/NormalScreen";
 import StatisticsScreen from "./screens/StatisticsScreen";
+import NegativeBinomialScreen from "./screens/NegativeBinomialScreen";
+import HypergeometricScreen from "./screens/HypergeometricScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -14,11 +16,13 @@ export default function App() {
     <NavigationContainer>
       <Drawer.Navigator initialRouteName="Home">
         <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen
-          name="Binomial"
-          component={BinomialScreen}
-        />
+        <Drawer.Screen name="Binomial" component={BinomialScreen} />
         <Drawer.Screen name="Statistics" component={StatisticsScreen} />
+        <Drawer.Screen
+          name="NegativeBinomial"
+          component={NegativeBinomialScreen}
+        />
+        <Drawer.Screen name="Hypergeometric" component={HypergeometricScreen} />
         <Drawer.Screen name="Poisson" component={PoissonScreen} />
         <Drawer.Screen name="Normal" component={NormalScreen} />
       </Drawer.Navigator>
