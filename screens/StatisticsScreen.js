@@ -1,20 +1,15 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
-import { BarChart } from "react-native-chart-kit"; // Import BarChart
+import { View, Text, TextInput, Button, StyleSheet, ScrollView } from "react-native";
+import { BarChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 
 const StatisticsScreen = () => {
   const [numbers, setNumbers] = useState("");
   const [mean, setMean] = useState(null);
   const [variance, setVariance] = useState(null);
-  const screenWidth = Dimensions.get("window").width; // Get the screen width
+  const [stdDeviation, setStdDeviation] = useState(null); // סטיית תקן
+  const [coeffVariation, setCoeffVariation] = useState(null); // מקדם שונות
+  const screenWidth = Dimensions.get("window").width;
 
   const chartConfig = {
     backgroundGradientFrom: "#fff",
@@ -25,55 +20,61 @@ const StatisticsScreen = () => {
   };
 
   const data = {
-    labels: ["Mean", "Variance"],
+    labels: ["ממוצע", "שונות", "סטיית תקן", "מקדם שונות"],
     datasets: [
       {
-        data: [mean, variance],
+        data: [mean, variance, stdDeviation, coeffVariation],
       },
     ],
   };
 
   const calculateStatistics = () => {
-    const numArray = numbers.split(",").map(Number);
-    if (numArray.some(isNaN)) {
-      alert("Please enter valid numbers separated by commas.");
-      return;
-    }
+    const numArray = numbers.split(",").map(Number).filter(n => !isNaN(n));
 
-    const meanValue =
-      numArray.reduce((acc, val) => acc + val, 0) / numArray.length;
+    const sum = numArray.reduce((acc, val) => acc + val, 0);
+    const meanValue = sum / numArray.length;
     setMean(meanValue);
 
-    const varianceValue =
-      numArray.reduce((acc, val) => acc + Math.pow(val - meanValue, 2), 0) /
-      numArray.length;
+    const varianceValue = numArray.reduce((acc, val) => acc + Math.pow(val - meanValue, 2), 0) / (numArray.length - 1);
     setVariance(varianceValue);
+
+    const stdDeviationValue = Math.sqrt(varianceValue);
+    setStdDeviation(stdDeviationValue);
+
+    const coeffVariationValue = (stdDeviationValue / meanValue) * 100;
+    setCoeffVariation(coeffVariationValue);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Statistics Calculator</Text>
+      <Text style={styles.title}>מחשבון סטטיסטיקה</Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter numbers separated by commas"
+        placeholder="הכנס מספרים מופרדים בפסיקים"
         value={numbers}
         onChangeText={setNumbers}
         keyboardType="numeric"
       />
-      <Button title="Calculate" onPress={calculateStatistics} color="#007bff" />
+      <Button title="חשב" onPress={calculateStatistics} color="#007bff" />
       <View style={styles.results}>
         <Text style={styles.resultText}>
-          Mean (Average): {mean ? mean.toFixed(2) : "N/A"}
+          ממוצע (μ): {mean !== null ? mean.toFixed(2) : "לא זמין"}
         </Text>
         <Text style={styles.resultText}>
-          Variance: {variance ? variance.toFixed(2) : "N/A"}
+          שונות (σ²): {variance !== null ? variance.toFixed(2) : "לא זמין"}
+        </Text>
+        <Text style={styles.resultText}>
+          סטיית תקן (σ): {stdDeviation !== null ? stdDeviation.toFixed(2) : "לא זמין"}
+        </Text>
+        <Text style={styles.resultText}>
+          מקדם שונות (C): {coeffVariation !== null ? coeffVariation.toFixed(2) + '%' : "לא זמין"}
         </Text>
       </View>
-      {mean !== null && variance !== null && (
+      {(mean !== null && variance !== null && stdDeviation !== null && coeffVariation !== null) && (
         <BarChart
           style={styles.chart}
           data={data}
-          width={screenWidth - 40} // Width of the chart
+          width={screenWidth - 40}
           height={220}
           yAxisLabel=""
           chartConfig={chartConfig}

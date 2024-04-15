@@ -15,12 +15,12 @@ export default function App() {
       <Drawer.Navigator initialRouteName="Home">
         <Drawer.Screen name="Home" component={HomeScreen} />
         <Drawer.Screen
-          name="Binomial Distribution"
+          name="Binomial"
           component={BinomialScreen}
         />
         <Drawer.Screen name="Statistics" component={StatisticsScreen} />
-        <Drawer.Screen name="Poisson Distribution" component={PoissonScreen} />
-        <Drawer.Screen name="Normal Distribution" component={NormalScreen} />
+        <Drawer.Screen name="Poisson" component={PoissonScreen} />
+        <Drawer.Screen name="Normal" component={NormalScreen} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
