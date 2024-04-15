@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 
@@ -18,7 +25,8 @@ function erf(x) {
   x = Math.abs(x);
 
   const t = 1.0 / (1.0 + p * x);
-  const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+  const y =
+    1.0 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
   return sign * y;
 }
 
@@ -40,8 +48,11 @@ const NormalScreen = () => {
     const xVal = parseFloat(xValue);
     const variance = stdDevVal ** 2;
     const step = stdDevVal / 10;
-    const xValues = Array.from({ length: 61 }, (_, i) => meanVal + (i - 30) * step);
-    const pdfPoints = xValues.map(x => ({
+    const xValues = Array.from(
+      { length: 61 },
+      (_, i) => meanVal + (i - 30) * step
+    );
+    const pdfPoints = xValues.map((x) => ({
       x: x.toFixed(2),
       y: (
         (1 / (stdDevVal * Math.sqrt(2 * Math.PI))) *
@@ -81,16 +92,20 @@ const NormalScreen = () => {
       />
       <Button title="חשב" onPress={calculateNormal} color="#007bff" />
       {probabilityGreater !== null && (
-        <Text style={styles.resultText}>ההסתברות ש-X גדול מ {xValue} היא: {probabilityGreater}</Text>
+        <Text style={styles.resultText}>
+          ההסתברות ש-X גדול מ {xValue} היא: {probabilityGreater}
+        </Text>
       )}
       {probabilityLess !== null && (
-        <Text style={styles.resultText}>ההסתברות ש-X קטן מ {xValue} היא: {probabilityLess}</Text>
+        <Text style={styles.resultText}>
+          ההסתברות ש-X קטן מ {xValue} היא: {probabilityLess}
+        </Text>
       )}
       {dataPoints.length > 0 && (
         <LineChart
           data={{
-            labels: dataPoints.map(dp => dp.x),
-            datasets: [{ data: dataPoints.map(dp => parseFloat(dp.y)) }]
+            labels: dataPoints.map((dp) => dp.x),
+            datasets: [{ data: dataPoints.map((dp) => parseFloat(dp.y)) }],
           }}
           width={screenWidth - 16}
           height={220}
@@ -107,7 +122,7 @@ const NormalScreen = () => {
           bezier
           style={{
             marginVertical: 8,
-            borderRadius: 16
+            borderRadius: 16,
           }}
         />
       )}

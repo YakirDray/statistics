@@ -1,8 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
-
 const StatisticsScreen = () => {
   const [numbers, setNumbers] = useState("");
   const [mean, setMean] = useState(null);
@@ -29,13 +35,18 @@ const StatisticsScreen = () => {
   };
 
   const calculateStatistics = () => {
-    const numArray = numbers.split(",").map(Number).filter(n => !isNaN(n));
+    const numArray = numbers
+      .split(",")
+      .map(Number)
+      .filter((n) => !isNaN(n));
 
     const sum = numArray.reduce((acc, val) => acc + val, 0);
     const meanValue = sum / numArray.length;
     setMean(meanValue);
 
-    const varianceValue = numArray.reduce((acc, val) => acc + Math.pow(val - meanValue, 2), 0) / (numArray.length - 1);
+    const varianceValue =
+      numArray.reduce((acc, val) => acc + Math.pow(val - meanValue, 2), 0) /
+      (numArray.length - 1);
     setVariance(varianceValue);
 
     const stdDeviationValue = Math.sqrt(varianceValue);
@@ -64,23 +75,30 @@ const StatisticsScreen = () => {
           שונות (σ²): {variance !== null ? variance.toFixed(2) : "לא זמין"}
         </Text>
         <Text style={styles.resultText}>
-          סטיית תקן (σ): {stdDeviation !== null ? stdDeviation.toFixed(2) : "לא זמין"}
+          סטיית תקן (σ):{" "}
+          {stdDeviation !== null ? stdDeviation.toFixed(2) : "לא זמין"}
         </Text>
         <Text style={styles.resultText}>
-          מקדם שונות (C): {coeffVariation !== null ? coeffVariation.toFixed(2) + '%' : "לא זמין"}
+          מקדם שונות (C):{" "}
+          {coeffVariation !== null
+            ? coeffVariation.toFixed(2) + "%"
+            : "לא זמין"}
         </Text>
       </View>
-      {(mean !== null && variance !== null && stdDeviation !== null && coeffVariation !== null) && (
-        <BarChart
-          style={styles.chart}
-          data={data}
-          width={screenWidth - 40}
-          height={220}
-          yAxisLabel=""
-          chartConfig={chartConfig}
-          verticalLabelRotation={0}
-        />
-      )}
+      {mean !== null &&
+        variance !== null &&
+        stdDeviation !== null &&
+        coeffVariation !== null && (
+          <BarChart
+            style={styles.chart}
+            data={data}
+            width={screenWidth - 40}
+            height={220}
+            yAxisLabel=""
+            chartConfig={chartConfig}
+            verticalLabelRotation={0}
+          />
+        )}
     </ScrollView>
   );
 };

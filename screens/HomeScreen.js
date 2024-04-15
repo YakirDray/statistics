@@ -7,12 +7,9 @@ import {
   Dimensions,
   Animated,
 } from "react-native";
-
 const { width } = Dimensions.get("window"); // Get the window dimensions
-
 function HomeScreen({ navigation }) {
   const animatedButtonScale = new Animated.Value(1);
-
   const handlePress = (route) => {
     Animated.sequence([
       Animated.timing(animatedButtonScale, {
