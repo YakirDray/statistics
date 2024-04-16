@@ -1,15 +1,22 @@
 import React from "react";
 import {
-  View,
   Text,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
   Animated,
+  ImageBackground,
 } from "react-native";
-const { width } = Dimensions.get("window"); // Get the window dimensions
+import { ScrollView } from "react-native-gesture-handler";
+
+const { width } = Dimensions.get("window");
+
+// Adjust the path as necessary to point to your actual image file
+const backgroundImage = require("../assets/back.webp");
+
 function HomeScreen({ navigation }) {
   const animatedButtonScale = new Animated.Value(1);
+
   const handlePress = (route) => {
     Animated.sequence([
       Animated.timing(animatedButtonScale, {
@@ -28,88 +35,98 @@ function HomeScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>מחשבון הסתברות </Text>
-      <Animated.View
-        style={[
-          styles.buttonContainer,
-          { transform: [{ scale: animatedButtonScale }] },
-        ]}
-      >
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handlePress("Binomial")}
-          activeOpacity={0.8}
+    <ImageBackground
+      source={backgroundImage}
+      style={styles.container}
+      resizeMode="cover"
+    >
+      <ScrollView>
+        <Text style={styles.title}>מחשבון ההתפלגויות של יקיר דריי</Text>
+
+        <Animated.View
+          style={[
+            styles.buttonContainer,
+            { transform: [{ scale: animatedButtonScale }] },
+          ]}
         >
-          <Text style={styles.buttonText}>Binomial Distribution</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handlePress("Poisson")}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.buttonText}>Poisson Distribution</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handlePress("NegativeBinomial")}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.buttonText}>NegativeBinomial Distribution</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handlePress("Normal")}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.buttonText}>Normal Distribution</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handlePress("Statistics")}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.buttonText}>Statistics</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handlePress("Hypergeometric")}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.buttonText}>Hypergeometric Distribution</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handlePress("Exponential")}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.buttonText}>Exponential Distribution</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handlePress("JointProbability")}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.buttonText}>JointProbability</Text>
-        </TouchableOpacity>
-      </Animated.View>
-      <Text style={styles.title}>Dray App</Text>
-    </View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePress("Binomial")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>התפלגות בינומית</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePress("Poisson")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>התפלגות פואסון</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePress("NegativeBinomial")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>התפלגות בינומית שלילית</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePress("Normal")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>התפלגות נורמלית</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePress("Statistics")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>סטטיסטיקה</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePress("Hypergeometric")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>התפלגות היפרגיאומטרית</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePress("Exponential")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>התפלגות אקספוננציאלית</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePress("JointProbability")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>הסתברות משותפת</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}> Y_D App's</Text>
+
+        </Animated.View>
+      </ScrollView>
+    </ImageBackground>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#232946", // A darker shade of blue for more depth
+    width: "100%", // Ensure the background covers the whole screen
+    height: "100%", // Ensure the background covers the whole screen
   },
   title: {
-    fontSize: 28, // Slightly larger for emphasis
+    fontSize: 25,
     fontWeight: "bold",
-    marginBottom: 35, // Increased spacing for aesthetic balance
-    color: "#eebbc3", // Soft pink to enhance readability and contrast
-    textTransform: "uppercase", // Maintaining the stylistic choice for consistency
+    marginBottom: 5,
+    color: "#eefecc",
+    textTransform: "capitalize",
   },
   buttonContainer: {
     width: "100%",
@@ -117,21 +134,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   button: {
-    backgroundColor: "#0f3460", // Consistent color theme for buttons
-    paddingVertical: 14, // Slightly thicker padding for a better tactile response
-    paddingHorizontal: 60, // Wider buttons to accommodate longer text comfortably
-    borderRadius: 12, // Slightly rounded corners for a smoother look
-    marginVertical: 12, // Consistent vertical spacing
-    width: width * 0.9, // Making buttons slightly wider for better accessibility
-    shadowColor: "#4ecca3", // Maintaining the greenish shadow for a unique glowing effect
-    shadowOffset: { width: 0, height: 4 }, // Slight vertical shadow for depth perception
-    shadowOpacity: 0.9, // More pronounced shadow effect
-    shadowRadius: 25, // Increased radius for a more diffuse glow
-    elevation: 10, // Higher elevation for a more pronounced shadow on Android
+    backgroundColor: "#0f3460",
+    paddingVertical: 14,
+    paddingHorizontal: 60,
+    borderRadius: 12,
+    marginVertical: 12,
+    width: width * 0.9,
+    shadowColor: "#4ecca3",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.9,
+    shadowRadius: 25,
+    elevation: 10,
   },
   buttonText: {
-    color: "#ffffff", // Bright white for the best contrast against the button background
-    fontSize: 20, // Larger font size for better readability
+    color: "#ffffff",
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
   },
