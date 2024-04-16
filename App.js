@@ -8,6 +8,8 @@ import NormalScreen from "./screens/NormalScreen";
 import StatisticsScreen from "./screens/StatisticsScreen";
 import NegativeBinomialScreen from "./screens/NegativeBinomialScreen";
 import HypergeometricScreen from "./screens/HypergeometricScreen";
+import ExponentialScreen from "./screens/ExponentialScreen";
+import JointProbabilityScreen from "./screens/JointProbabilityScreen ";
 
 const Drawer = createDrawerNavigator();
 
@@ -25,7 +27,12 @@ export default function App() {
         <Drawer.Screen name="Hypergeometric" component={HypergeometricScreen} />
         <Drawer.Screen name="Poisson" component={PoissonScreen} />
         <Drawer.Screen name="Normal" component={NormalScreen} />
+        <Drawer.Screen name="Exponential" component={ExponentialScreen} />
+        <Drawer.Screen name="JointProbability" component={JointProbabilityScreen} />
+
+
       </Drawer.Navigator>
     </NavigationContainer>
   );
 }
+

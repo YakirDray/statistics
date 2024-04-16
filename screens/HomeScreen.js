@@ -78,6 +78,20 @@ function HomeScreen({ navigation }) {
         >
           <Text style={styles.buttonText}>Hypergeometric Distribution</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handlePress("Exponential")}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>Exponential Distribution</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handlePress("JointProbability")}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>JointProbability</Text>
+        </TouchableOpacity>
       </Animated.View>
       <Text style={styles.title}>Dray App</Text>
     </View>
