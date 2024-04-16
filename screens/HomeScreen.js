@@ -51,17 +51,17 @@ function HomeScreen({ navigation }) {
         >
           <TouchableOpacity
             style={styles.button}
+            onPress={() => handlePress("Normal")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>התפלגות נורמלית</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
             onPress={() => handlePress("Binomial")}
             activeOpacity={0.8}
           >
             <Text style={styles.buttonText}>התפלגות בינומית</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress("Poisson")}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.buttonText}>התפלגות פואסון</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
@@ -72,17 +72,10 @@ function HomeScreen({ navigation }) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => handlePress("Normal")}
+            onPress={() => handlePress("Poisson")}
             activeOpacity={0.8}
           >
-            <Text style={styles.buttonText}>התפלגות נורמלית</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress("Statistics")}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.buttonText}>סטטיסטיקה</Text>
+            <Text style={styles.buttonText}>התפלגות פואסון</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
@@ -105,8 +98,14 @@ function HomeScreen({ navigation }) {
           >
             <Text style={styles.buttonText}>הסתברות משותפת</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePress("Statistics")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>סטטיסטיקה</Text>
+          </TouchableOpacity>
           <Text style={styles.title}> Y_D App's</Text>
-
         </Animated.View>
       </ScrollView>
     </ImageBackground>
