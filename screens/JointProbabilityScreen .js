@@ -1,221 +1,99 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
-import { LineChart } from "react-native-chart-kit";
-import { Dimensions } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, ScrollView } from "react-native";
 import * as math from "mathjs";
-
-const screenWidth = Dimensions.get("window").width;
 
 const JointProbabilityScreen = () => {
   const [pX, setPX] = useState("");
   const [nX, setNX] = useState("");
-  const [kX, setKX] = useState("");
-
   const [pY, setPY] = useState("");
   const [nY, setNY] = useState("");
-  const [kY, setKY] = useState("");
 
-  const [dataPointsX, setDataPointsX] = useState({
-    labels: [],
-    probabilities: [],
-  });
-  const [dataPointsY, setDataPointsY] = useState({
-    labels: [],
-    probabilities: [],
-  });
-  const [dataPointsJoint, setDataPointsJoint] = useState({
-    labels: [],
-    probabilities: [],
-  });
+  const [jointTable, setJointTable] = useState([]);
+  const [marginalPX, setMarginalPX] = useState([]);
+  const [marginalPY, setMarginalPY] = useState([]);
 
   const calculateProbabilities = () => {
-    const nXVal = parseInt(nX);
+    const nXVal = parseInt(nX, 10);
     const pXVal = parseFloat(pX);
-    const kXVal = parseInt(kX);
-
-    const nYVal = parseInt(nY);
+    const nYVal = parseInt(nY, 10);
     const pYVal = parseFloat(pY);
-    const kYVal = parseInt(kY);
 
-    if (
-      isNaN(pXVal) ||
-      isNaN(nXVal) ||
-      isNaN(kXVal) ||
-      isNaN(pYVal) ||
-      isNaN(nYVal) ||
-      isNaN(kYVal)
-    ) {
-      alert("אנא הזן ערכים מספריים תקפים לכל הפרמטרים.");
+    if (isNaN(nXVal) || isNaN(pXVal) || pXVal < 0 || pXVal > 1 ||
+        isNaN(nYVal) || isNaN(pYVal) || pYVal < 0 || pYVal > 1) {
+      alert("Please enter valid numbers for probabilities (between 0 and 1) and non-negative integers for trials.");
       return;
     }
 
-    let probabilitiesX = [];
-    let labelsX = [];
-    for (let k = 0; k <= nXVal; k++) {
-      probabilitiesX.push(
-        math.combinations(nXVal, k) *
-          Math.pow(pXVal, k) *
-          Math.pow(1 - pXVal, nXVal - k)
-      );
-      labelsX.push(`k=${k}`);
+    let calculatedJointTable = Array.from({ length: nXVal + 1 }, () =>
+      Array(nYVal + 1).fill(0));
+    let calculatedMarginalPX = new Array(nXVal + 1).fill(0);
+    let calculatedMarginalPY = new Array(nYVal + 1).fill(0);
+
+    for (let i = 0; i <= nXVal; i++) {
+      for (let j = 0; j <= nYVal; j++) {
+        const pXij = math.combinations(nXVal, i) * Math.pow(pXVal, i) * Math.pow(1 - pXVal, nXVal - i);
+        const pYij = math.combinations(nYVal, j) * Math.pow(pYVal, j) * Math.pow(1 - pYVal, nYVal - j);
+        const jointProb = pXij * pYij;
+        calculatedJointTable[i][j] = jointProb.toFixed(4);
+        calculatedMarginalPX[i] += jointProb;
+        calculatedMarginalPY[j] += jointProb;
+      }
     }
 
-    let probabilitiesY = [];
-    let labelsY = [];
-    for (let k = 0; k <= nYVal; k++) {
-      probabilitiesY.push(
-        math.combinations(nYVal, k) *
-          Math.pow(pYVal, k) *
-          Math.pow(1 - pYVal, nYVal - k)
-      );
-      labelsY.push(`k=${k}`);
-    }
-
-    const probX = probabilitiesX[kXVal];
-    const probY = probabilitiesY[kYVal];
-    const jointProb = probX * probY; // Assuming independence
-
-    setDataPointsX({ labels: labelsX, probabilities: probabilitiesX });
-    setDataPointsY({ labels: labelsY, probabilities: probabilitiesY });
-    setDataPointsJoint({
-      labels: ["X", "Y", "Joint"],
-      probabilities: [probX, probY, jointProb],
-    });
+    setJointTable(calculatedJointTable);
+    setMarginalPX(calculatedMarginalPX.map(p => p.toFixed(4)));
+    setMarginalPY(calculatedMarginalPY.map(p => p.toFixed(4)));
   };
+
+  const renderTableHeader = () => (
+    <View style={styles.tableRow}>
+      <Text style={styles.cell}>P(Y)\X</Text>
+      {Array.from({ length: parseInt(nY, 10) + 1 }, (_, index) => index).map(index => (
+        <Text key={index} style={styles.cell}>{`Y=${index}`}</Text>
+      ))}
+      <Text style={styles.cell}>P(X)</Text>
+    </View>
+  );
+
+  const renderTableBody = () => (
+    jointTable.map((row, index) => (
+      <View key={index} style={styles.tableRow}>
+        <Text style={styles.cell}>{`X=${index}`}</Text>
+        {row.map((prob, j) => (
+          <Text key={j} style={styles.cell}>{prob}</Text>
+        ))}
+        <Text style={styles.cell}>{marginalPX[index]}</Text>
+      </View>
+    ))
+  );
+
+  const renderMarginalPY = () => (
+    <View style={styles.tableRow}>
+      <Text style={styles.cell}>P(Y)</Text>
+      {marginalPY.map((prob, index) => (
+        <Text key={index} style={styles.cell}>{prob}</Text>
+      ))}
+      <Text style={styles.cell}>1</Text>
+    </View>
+  );
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>מחשבון ההסתברות המשותפת ל-X ו-Y</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="הזן pX (הסתברות להצלחה ב-X)"
-        value={pX}
-        onChangeText={setPX}
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="הזן nX (מספר הניסויים ב-X)"
-        value={nX}
-        onChangeText={setNX}
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="הזן kX (מספר ההצלחות הרצוי ב-X)"
-        value={kX}
-        onChangeText={setKX}
-        keyboardType="numeric"
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="הזן pY (הסתברות להצלחה ב-Y)"
-        value={pY}
-        onChangeText={setPY}
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="הזן nY (מספר הניסויים ב-Y)"
-        value={nY}
-        onChangeText={setNY}
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="הזן kY (מספר ההצלחות הרצוי ב-Y)"
-        value={kY}
-        onChangeText={setKY}
-        keyboardType="numeric"
-      />
-
-      <Button
-        title="חשב הסתברויות"
-        onPress={calculateProbabilities}
-        color="#007bff"
-      />
-
-      {dataPointsX.labels.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>התפלגות X:</Text>
-          <LineChart
-            data={{
-              labels: dataPointsX.labels,
-              datasets: [{ data: dataPointsX.probabilities }],
-            }}
-            width={screenWidth}
-            height={220}
-            yAxisLabel="P"
-            chartConfig={chartConfig}
-            bezier
-            style={styles.chart}
-          />
-        </View>
-      )}
-
-      {dataPointsY.labels.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>התפלגות Y:</Text>
-          <LineChart
-            data={{
-              labels: dataPointsY.labels,
-              datasets: [{ data: dataPointsY.probabilities }],
-            }}
-            width={screenWidth}
-            height={220}
-            yAxisLabel="P"
-            chartConfig={chartConfig}
-            bezier
-            style={styles.chart}
-          />
-        </View>
-      )}
-
-      {dataPointsJoint.labels.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>ההתפלגות המשותפת:</Text>
-          <LineChart
-            data={{
-              labels: dataPointsJoint.labels,
-              datasets: [{ data: dataPointsJoint.probabilities }],
-            }}
-            width={screenWidth}
-            height={220}
-            yAxisLabel="P"
-            chartConfig={chartConfig}
-            bezier
-            style={styles.chart}
-          />
+      <Text style={styles.title}>Joint Probability Calculator for X and Y</Text>
+      <TextInput style={styles.input} placeholder="Enter pX (Success probability for X)" value={pX} onChangeText={setPX} keyboardType="numeric" />
+      <TextInput style={styles.input} placeholder="Enter nX (Number of trials for X)" value={nX} onChangeText={setNX} keyboardType="numeric" />
+      <TextInput style={styles.input} placeholder="Enter pY (Success probability for Y)" value={pY} onChangeText={setPY} keyboardType="numeric" />
+      <TextInput style={styles.input} placeholder="Enter nY (Number of trials for Y)" value={nY} onChangeText={setNY} keyboardType="numeric" />
+      <Button title="Calculate Probabilities" onPress={calculateProbabilities} color="#007bff" />
+      {jointTable.length > 0 && (
+        <View style={styles.tableContainer}>
+          {renderTableHeader()}
+          {renderTableBody()}
+          {renderMarginalPY()}
         </View>
       )}
     </ScrollView>
   );
-};
-
-const chartConfig = {
-  backgroundColor: "#e26a00",
-  backgroundGradientFrom: "#fb8c00",
-  backgroundGradientTo: "#ffa726",
-  decimalPlaces: 5,
-  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-  style: {
-    borderRadius: 16,
-  },
-  propsForDots: {
-    r: "6",
-    strokeWidth: "2",
-    stroke: "#ffa726",
-  },
 };
 
 const styles = StyleSheet.create({
@@ -239,26 +117,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
   },
-  chart: {
-    marginVertical: 8,
-    borderRadius: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
+  tableContainer: {
     marginTop: 20,
-    marginBottom: 10,
-    textAlign: "center",
+    paddingHorizontal: 10,
+    width:"90%"
   },
-  resultText: {
-    fontSize: 16,
+  tableRow: {
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 5,
-    padding: 5,
-    borderWidth: 1,
-    borderColor: "#bdc3c7",
-    borderRadius: 5,
-    backgroundColor: "#ecf0f1",
+  },
+  cell: {
+    borderWidth: 2,
+    borderColor: "#ddd",
+    padding: 10,
     textAlign: "center",
+   
   },
 });
 
